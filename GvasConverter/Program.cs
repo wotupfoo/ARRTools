@@ -14,7 +14,7 @@ namespace RailroadsOnlineSaveViewer
             if (args.Length != 1)
             {
                 Console.WriteLine("Usage:");
-                Console.WriteLine("  gvas-converter path_to_save_file|path_to_json");
+                Console.WriteLine("  arr-sav-converter path_to_save_file");
                 return;
             }
 
@@ -34,7 +34,7 @@ namespace RailroadsOnlineSaveViewer
                 var json = JsonConvert.SerializeObject(save, new JsonSerializerSettings{Formatting = Formatting.Indented});
 
                 Console.WriteLine("Saving json...");
-                using (var stream = File.Open(args[0] + "_orig.json", FileMode.Create, FileAccess.Write, FileShare.Read))
+                using (var stream = File.Open(args[0] + ".orig.json", FileMode.Create, FileAccess.Write, FileShare.Read))
                 using (var writer = new StreamWriter(stream, new UTF8Encoding(false)))
                     writer.Write(json);
 
@@ -42,7 +42,7 @@ namespace RailroadsOnlineSaveViewer
 
                 var betterJson = JsonConvert.SerializeObject(properties, new JsonSerializerSettings{Formatting = Formatting.Indented});
 
-                using (var stream = File.Open(args[0] + "_better.json", FileMode.Create, FileAccess.Write))
+                using (var stream = File.Open(args[0] + ".better.json", FileMode.Create, FileAccess.Write))
                 {
                     using (var writer = new StreamWriter(stream, new UTF8Encoding(false)))
                     {
