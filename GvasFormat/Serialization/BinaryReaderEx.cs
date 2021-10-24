@@ -9,18 +9,22 @@ namespace GvasFormat.Serialization
 
         public static string ReadUEString(this BinaryReader reader)
         {
-            if (reader.PeekChar() < 0)
-                return null;
+            /*if (reader.PeekChar() < 0)
+                return null;*/
 
             var length = reader.ReadInt32();
             if (length == 0)
                 return null;
 
-            if (length == 1)
+            if (length == 1 || length == -1)
                 return "";
 
-            var valueBytes = reader.ReadBytes(length);
-            return Utf8.GetString(valueBytes, 0, valueBytes.Length - 1);
+            byte[] valueBytes = reader.ReadBytes(length > 0 ? length : -2*length);
+
+            if (length > 0)
+                return Utf8.GetString(valueBytes, 0, valueBytes.Length - 1);
+            else
+                return Encoding.Unicode.GetString(valueBytes, 0, valueBytes.Length - 2);            ;
         }
 
         public static void WriteUEString(this BinaryWriter writer, string value)

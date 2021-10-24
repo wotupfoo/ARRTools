@@ -5,7 +5,7 @@ using GvasFormat;
 using GvasFormat.Serialization;
 using Newtonsoft.Json;
 
-namespace GvasConverter
+namespace RailroadsOnlineSaveViewer
 {
     class Program
     {
@@ -34,9 +34,21 @@ namespace GvasConverter
                 var json = JsonConvert.SerializeObject(save, new JsonSerializerSettings{Formatting = Formatting.Indented});
 
                 Console.WriteLine("Saving json...");
-                using (var stream = File.Open(args[0] + ".json", FileMode.Create, FileAccess.Write, FileShare.Read))
+                using (var stream = File.Open(args[0] + "_orig.json", FileMode.Create, FileAccess.Write, FileShare.Read))
                 using (var writer = new StreamWriter(stream, new UTF8Encoding(false)))
                     writer.Write(json);
+
+                Properties properties = new Properties(save);
+
+                var betterJson = JsonConvert.SerializeObject(properties, new JsonSerializerSettings{Formatting = Formatting.Indented});
+
+                using (var stream = File.Open(args[0] + "_better.json", FileMode.Create, FileAccess.Write))
+                {
+                    using (var writer = new StreamWriter(stream, new UTF8Encoding(false)))
+                    {
+                        writer.Write(betterJson);
+                    }
+                }
             }
             Console.WriteLine("Done.");
             Console.ReadKey(true);

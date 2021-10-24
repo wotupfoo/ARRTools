@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Linq;
 
 namespace GvasFormat.Serialization.UETypes
 {
@@ -15,31 +16,33 @@ namespace GvasFormat.Serialization.UETypes
         {
             var pos = reader.BaseStream.Position;
             var terminator = reader.ReadByte();
-            /*if (terminator != 0)
-                throw new FormatException($"Offset: 0x{reader.BaseStream.Position - 1:x8}. Expected terminator (0x00), but was (0x{terminator:x2})");*/
 
-            // valueLength starts here
             Flags = reader.ReadInt64();
-            /*
-                    if (Flags != 0)
-                        throw new FormatException($"Offset: 0x{reader.BaseStream.Position - 8:x8}. Expected text ??? {0x00}, but was {Flags:x16}");
-            */
-
-            //var terminator1 = reader.ReadByte();
-            /*if (terminator1 != 0)
-                throw new FormatException($"Offset: 0x{reader.BaseStream.Position - 1:x8}. Expected terminator (0x00), but was (0x{terminator1:x2})");*/
 
             switch (terminator)
             {
                 case 1:
-                    var terminator1 = reader.ReadByte();
-                    var str = reader.ReadUEString();
-                    Id = reader.ReadUEString();
-                    Value = reader.ReadUEString();
-                    byte[] b = reader.ReadBytes(11);
+                    byte[] b1 = reader.ReadBytes(5);
+                    Type = reader.ReadUEString();
+                    string separator = reader.ReadUEString();
+                    int numRows = reader.ReadInt32();
+                    (string, byte, UETextProperty)[] rowsData = new (string, byte, UETextProperty)[numRows];
+                    for (int i = 0; i < numRows; i++)
+                    {
+                        string rowId = reader.ReadUEString();
+                        byte rowType = reader.ReadByte();
+                        if (rowType != 4)
+                            throw new NotImplementedException();
+
+                        UETextProperty rowData = new UETextProperty(reader, valueLength);
+
+                        rowsData[i] = (rowId, rowType, rowData);
+                    }
+                    Value = string.Format(separator, rowsData.Select(x => x.Item3.Value).ToArray());
                     break;
                 case 2:
-                    Value = reader.ReadUEString();
+                    if (((Flags >> 32) & 0xFFFFFFFF) != 0)
+                        Value = reader.ReadUEString();
                     break;
 
             }

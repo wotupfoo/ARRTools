@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.136
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31729.503
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GvasFormat", "GvasFormat\GvasFormat.csproj", "{F78A00BF-0F42-4AB7-96D8-A75F043C63CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GvasConverter", "GvasConverter\GvasConverter.csproj", "{F618BACD-D0A4-409D-B74B-29D0BFFB803F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RailroadsOnlineSaveViewer", "GvasConverter\RailroadsOnlineSaveViewer.csproj", "{F618BACD-D0A4-409D-B74B-29D0BFFB803F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
