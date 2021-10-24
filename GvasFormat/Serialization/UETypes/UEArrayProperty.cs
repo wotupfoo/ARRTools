@@ -28,6 +28,18 @@ namespace GvasFormat.Serialization.UETypes
                 case "ByteProperty":
                     Items = UEByteProperty.Read(reader, valueLength, count);
                     break;
+                case "FloatProperty":
+                    Items = UEFloatProperty.Read(reader, valueLength, count);
+                    break;
+                case "IntProperty":
+                    Items = UEIntProperty.Read(reader, valueLength, count);
+                    break;
+                case "BoolProperty":
+                    Items = UEBoolProperty.Read(reader, valueLength, count);
+                    break;
+                case "TextProperty":
+                    Items = UETextProperty.Read(reader, valueLength, count);
+                    break;
                 default:
                 {
                     for (var i = 0; i < count; i++)
