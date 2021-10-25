@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 
 namespace GvasFormat.Serialization.UETypes
 {
@@ -13,28 +12,36 @@ namespace GvasFormat.Serialization.UETypes
         public static UEProperty Read(BinaryReader reader)
         {
             if (reader.PeekChar() < 0)
+            {
                 return null;
+            }
 
-            var name = reader.ReadUEString();
+            string name = reader.ReadUEString();
             if (name == null)
+            {
                 return null;
+            }
 
             if (name == "None")
+            {
                 return new UENoneProperty { Name = name };
+            }
 
-            var type = reader.ReadUEString();
-            var valueLength = reader.ReadInt64();
+            string type = reader.ReadUEString();
+            long valueLength = reader.ReadInt64();
             return UESerializer.Deserialize(name, type, valueLength, reader);
         }
 
         public static UEProperty[] Read(BinaryReader reader, int count)
         {
             if (reader.PeekChar() < 0)
+            {
                 return null;
+            }
 
-            var name = reader.ReadUEString();
-            var type = reader.ReadUEString();
-            var valueLength = reader.ReadInt64();
+            string name = reader.ReadUEString();
+            string type = reader.ReadUEString();
+            long valueLength = reader.ReadInt64();
             return UESerializer.Deserialize(name, type, valueLength, count, reader);
         }
     }

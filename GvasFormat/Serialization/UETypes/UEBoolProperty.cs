@@ -11,15 +11,23 @@ namespace GvasFormat.Serialization.UETypes
         public UEBoolProperty(BinaryReader reader, long valueLength)
         {
             if (valueLength != 0)
+            {
                 throw new FormatException($"Offset: 0x{reader.BaseStream.Position - 1:x8}. Expected bool value length 0, but was {valueLength}");
+            }
 
-            var val = reader.ReadByte();
+            byte val = reader.ReadByte();
             if (val == 0)
+            {
                 Value = false;
+            }
             else if (val == 1)
+            {
                 Value = true;
+            }
             else
+            {
                 throw new InvalidOperationException($"Offset: 0x{reader.BaseStream.Position - 1:x8}. Expected bool value, but was {val}");
+            }
         }
         public static UEProperty[] Read(BinaryReader reader, long valueLength, int count)
         {

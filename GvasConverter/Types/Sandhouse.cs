@@ -10,13 +10,13 @@ namespace RailroadsOnlineSaveViewer
         Wooden
     }
 
-    public class Sandhouse: StaticObject
+    public class Sandhouse : StaticObject
     {
         public SandhouseType Type;
 
         public Sandhouse() { }
 
-        public Sandhouse(SandhouseType type, Location location, Rotation rotation): base(location, rotation)
+        public Sandhouse(SandhouseType type, Location location, Rotation rotation) : base(location, rotation)
         {
             Type = type;
         }

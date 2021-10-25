@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using GvasFormat.Serialization.UETypes;
+using System.Collections.Generic;
 using System.Text;
-using GvasFormat.Serialization.UETypes;
 
 namespace GvasFormat
 {

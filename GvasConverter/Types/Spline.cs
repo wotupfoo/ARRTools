@@ -66,17 +66,25 @@ namespace RailroadsOnlineSaveViewer
         public void BuildSegments(Location[] controlPoints, bool[] visibility, int index)
         {
             if (controlPointsIndexStart == null || controlPointsIndexEnd == null)
+            {
                 throw new System.Exception("Unable to parse control points, start and end indexes not set!");
+            }
 
             if (visibilityIndexStart == null || visibilityIndexEnd == null)
+            {
                 throw new System.Exception("Unable to parse visibility points, start and end indexes not set!");
+            }
 
             if (controlPointsIndexStart != visibilityIndexStart + index || controlPointsIndexEnd != visibilityIndexEnd + index + 1)
+            {
                 throw new System.Exception("Visibility segments count and control points count not same!");
+            }
 
             Location firstControlPoint = controlPoints[(int)controlPointsIndexStart];
             if (firstControlPoint.X != Location.X || firstControlPoint.Y != Location.Y || firstControlPoint.Z != Location.Z)
+            {
                 throw new System.Exception("First control point and spline location are different!");
+            }
 
             int j = 0;
             Segments = new SplineSegment[(int)controlPointsIndexEnd - (int)controlPointsIndexStart];

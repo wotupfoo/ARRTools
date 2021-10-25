@@ -12,12 +12,14 @@ namespace GvasFormat.Serialization.UETypes
         public UEArrayProperty(BinaryReader reader, long valueLength)
         {
             ItemType = reader.ReadUEString();
-            var terminator = reader.ReadByte();
+            byte terminator = reader.ReadByte();
             if (terminator != 0)
+            {
                 throw new FormatException($"Offset: 0x{reader.BaseStream.Position - 1:x8}. Expected terminator (0x00), but was (0x{terminator:x2})");
+            }
 
             // valueLength starts here
-            var count = reader.ReadInt32();
+            int count = reader.ReadInt32();
             Items = new UEProperty[count];
 
             switch (ItemType)
@@ -42,8 +44,11 @@ namespace GvasFormat.Serialization.UETypes
                     break;
                 default:
                 {
-                    for (var i = 0; i < count; i++)
+                    for (int i = 0; i < count; i++)
+                    {
                         Items[i] = UESerializer.Deserialize(null, ItemType, -1, reader);
+                    }
+
                     break;
                 }
             }

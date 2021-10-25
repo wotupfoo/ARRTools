@@ -1,8 +1,5 @@
-﻿using RailroadsOnlineSaveViewer.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using GvasFormat.Serialization.UETypes;
+﻿using GvasFormat.Serialization.UETypes;
+using RailroadsOnlineSaveViewer.Types;
 
 namespace RailroadsOnlineSaveViewer
 {
@@ -13,7 +10,10 @@ namespace RailroadsOnlineSaveViewer
 
         public Player[] Players;
         public Spline[] Splines;
-        public StaticObject[] StaticObjects;
+        public Switch[] Switches;
+        public Watertower[] Watertowers;
+        public Sandhouse[] Sandhouses;
+        public Industry[] Industries;
         public Turntable[] Turntables;
         public Vehicle[] Vehicles;
         public Location[] RemovedVegetationAssets;
@@ -21,14 +21,10 @@ namespace RailroadsOnlineSaveViewer
         private Location[] splineControlPoints;
         private bool[] splineVisibilityPoints;
 
-        private Switch[] Switches;
-        private Watertower[] Watertowers;
-        private Sandhouse[] Sandhouses;
-        private Industry[] Industries;
-
         public Properties(GvasFormat.Gvas save)
         {
-            save.Properties.ForEach(property => {
+            save.Properties.ForEach(property =>
+            {
                 switch (property.Name)
                 {
                     case "SaveGameDate":
@@ -45,7 +41,9 @@ namespace RailroadsOnlineSaveViewer
                         {
                             Players = new Player[arrayProperty.Items.Length];
                             for (int i = 0; i < Players.Length; i++)
+                            {
                                 Players[i] = new Player();
+                            }
                         }
 
                         switch (arrayProperty.Name)
@@ -99,7 +97,9 @@ namespace RailroadsOnlineSaveViewer
                         {
                             Splines = new Spline[arrayProperty.Items.Length];
                             for (int i = 0; i < Splines.Length; i++)
+                            {
                                 Splines[i] = new Spline();
+                            }
                         }
 
                         switch (arrayProperty.Name)
@@ -132,7 +132,7 @@ namespace RailroadsOnlineSaveViewer
                             case "SplineControlPointsIndexStartArray":
                                 for (int i = 0; i < arrayProperty.Items.Length; i++)
                                 {
-                                    int index = (int)((UEIntProperty) arrayProperty.Items[i]).Value;
+                                    int index = ((UEIntProperty) arrayProperty.Items[i]).Value;
 
                                     Splines[i].SetControlPointIndexStart(index);
                                 }
@@ -140,7 +140,7 @@ namespace RailroadsOnlineSaveViewer
                             case "SplineControlPointsIndexEndArray":
                                 for (int i = 0; i < arrayProperty.Items.Length; i++)
                                 {
-                                    int index = (int)((UEIntProperty) arrayProperty.Items[i]).Value;
+                                    int index = ((UEIntProperty) arrayProperty.Items[i]).Value;
 
                                     Splines[i].SetControlPointIndexEnd(index);
                                 }
@@ -149,7 +149,7 @@ namespace RailroadsOnlineSaveViewer
                                 splineVisibilityPoints = new bool[arrayProperty.Items.Length];
                                 for (int i = 0; i < arrayProperty.Items.Length; i++)
                                 {
-                                    bool visible = (bool)((UEBoolProperty) arrayProperty.Items[i]).Value;
+                                    bool visible = ((UEBoolProperty) arrayProperty.Items[i]).Value;
 
                                     splineVisibilityPoints[i] = visible;
                                 }
@@ -157,7 +157,7 @@ namespace RailroadsOnlineSaveViewer
                             case "SplineVisibilityStartArray":
                                 for (int i = 0; i < arrayProperty.Items.Length; i++)
                                 {
-                                    int index = (int)((UEIntProperty) arrayProperty.Items[i]).Value;
+                                    int index = ((UEIntProperty) arrayProperty.Items[i]).Value;
 
                                     Splines[i].SetVisibilityIndexStart(index);
                                 }
@@ -165,7 +165,7 @@ namespace RailroadsOnlineSaveViewer
                             case "SplineVisibilityEndArray":
                                 for (int i = 0; i < arrayProperty.Items.Length; i++)
                                 {
-                                    int index = (int)((UEIntProperty) arrayProperty.Items[i]).Value;
+                                    int index = ((UEIntProperty) arrayProperty.Items[i]).Value;
 
                                     Splines[i].SetVisibilityIndexEnd(index);
                                 }
@@ -184,7 +184,9 @@ namespace RailroadsOnlineSaveViewer
                         {
                             Switches = new Switch[arrayProperty.Items.Length];
                             for (int i = 0; i < Switches.Length; i++)
+                            {
                                 Switches[i] = new Switch();
+                            }
                         }
                         switch (arrayProperty.Name)
                         {
@@ -232,7 +234,9 @@ namespace RailroadsOnlineSaveViewer
                         {
                             Turntables = new Turntable[arrayProperty.Items.Length];
                             for (int i = 0; i < Turntables.Length; i++)
+                            {
                                 Turntables[i] = new Turntable();
+                            }
                         }
 
                         switch (arrayProperty.Name)
@@ -275,7 +279,9 @@ namespace RailroadsOnlineSaveViewer
                         {
                             Watertowers = new Watertower[arrayProperty.Items.Length];
                             for (int i = 0; i < Watertowers.Length; i++)
+                            {
                                 Watertowers[i] = new Watertower();
+                            }
                         }
 
                         switch (arrayProperty.Name)
@@ -323,7 +329,9 @@ namespace RailroadsOnlineSaveViewer
                         {
                             Sandhouses = new Sandhouse[arrayProperty.Items.Length];
                             for (int i = 0; i < Sandhouses.Length; i++)
+                            {
                                 Sandhouses[i] = new Sandhouse();
+                            }
                         }
 
                         switch (arrayProperty.Name)
@@ -373,7 +381,9 @@ namespace RailroadsOnlineSaveViewer
                         {
                             Industries = new Industry[arrayProperty.Items.Length];
                             for (int i = 0; i < Industries.Length; i++)
+                            {
                                 Industries[i] = new Industry();
+                            }
                         }
 
                         switch (arrayProperty.Name)
@@ -502,7 +512,9 @@ namespace RailroadsOnlineSaveViewer
                         {
                             Vehicles = new Vehicle[arrayProperty.Items.Length];
                             for (int i = 0; i < Vehicles.Length; i++)
+                            {
                                 Vehicles[i] = new Vehicle();
+                            }
                         }
 
                         switch (arrayProperty.Name)
@@ -713,16 +725,10 @@ namespace RailroadsOnlineSaveViewer
                 }
             });
 
-            for(int i = 0; i < Splines.Length; i++)
+            for (int i = 0; i < Splines.Length; i++)
             {
                 Splines[i].BuildSegments(splineControlPoints, splineVisibilityPoints, i);
             }
-
-            StaticObjects = new StaticObject[Switches.Length + Watertowers.Length + Sandhouses.Length + Industries.Length];
-            Switches.CopyTo(StaticObjects, 0);
-            Watertowers.CopyTo(StaticObjects, Switches.Length);
-            Sandhouses.CopyTo(StaticObjects, Switches.Length + Watertowers.Length);
-            Industries.CopyTo(StaticObjects, Switches.Length + Watertowers.Length + Sandhouses.Length);
         }
     }
 }

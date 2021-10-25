@@ -1,6 +1,6 @@
-﻿using System;
+﻿using GvasFormat.Serialization.UETypes;
+using System;
 using System.IO;
-using GvasFormat.Serialization.UETypes;
 
 namespace GvasFormat.Serialization
 {
@@ -9,7 +9,7 @@ namespace GvasFormat.Serialization
         internal static UEProperty Deserialize(string name, string type, long valueLength, BinaryReader reader)
         {
             UEProperty result;
-            var itemOffset = reader.BaseStream.Position;
+            long itemOffset = reader.BaseStream.Position;
             switch (type)
             {
                 case "BoolProperty":
@@ -65,7 +65,7 @@ namespace GvasFormat.Serialization
                 default:
                     throw new FormatException($"Unknown value type '{type}' of item '{name}'");
             }
-            foreach (var item in result)
+            foreach (UEProperty item in result)
             {
                 item.Name = name;
                 item.Type = type;

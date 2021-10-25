@@ -10,14 +10,14 @@ namespace RailroadsOnlineSaveViewer
         Wooden
     }
 
-    public class Watertower: StaticObject
+    public class Watertower : StaticObject
     {
         public WatertowerType Type;
         public float WaterLevel;
 
         public Watertower() { }
 
-        public Watertower(WatertowerType type, Location location, Rotation rotation, float waterLevel): base(location, rotation)
+        public Watertower(WatertowerType type, Location location, Rotation rotation, float waterLevel) : base(location, rotation)
         {
             Type = type;
             WaterLevel = waterLevel;

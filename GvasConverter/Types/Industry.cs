@@ -20,7 +20,7 @@ namespace RailroadsOnlineSaveViewer
         Firewood
     }
 
-    public class Industry: StaticObject
+    public class Industry : StaticObject
     {
         public IndustryType Type;
         public int[] EductsStored;
@@ -28,7 +28,7 @@ namespace RailroadsOnlineSaveViewer
 
         public Industry() { }
 
-        public Industry(IndustryType type, Location location, Rotation rotation, int[] eductsStored, int[] productsStored): base(location, rotation)
+        public Industry(IndustryType type, Location location, Rotation rotation, int[] eductsStored, int[] productsStored) : base(location, rotation)
         {
             Type = type;
             EductsStored = eductsStored;

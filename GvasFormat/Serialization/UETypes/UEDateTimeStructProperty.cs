@@ -9,7 +9,10 @@ namespace GvasFormat.Serialization.UETypes
     {
         public UEDateTimeStructProperty() { }
 
-        public UEDateTimeStructProperty(BinaryReader reader) => Value = DateTime.FromBinary(reader.ReadInt64());
+        public UEDateTimeStructProperty(BinaryReader reader)
+        {
+            Value = DateTime.FromBinary(reader.ReadInt64());
+        }
 
         public DateTime Value;
     }

@@ -12,13 +12,17 @@ namespace GvasFormat.Serialization.UETypes
         {
             if (!noTerminator)
             {
-                var terminator = reader.ReadByte();
+                byte terminator = reader.ReadByte();
                 if (terminator != 0)
+                {
                     throw new FormatException($"Offset: 0x{reader.BaseStream.Position - 1:x8}. Expected terminator (0x00), but was (0x{terminator:x2})");
+                }
             }
 
             if (valueLength != sizeof(int))
+            {
                 throw new FormatException($"Expected int value of length {sizeof(int)}, but was {valueLength}");
+            }
 
             Value = reader.ReadInt32();
         }

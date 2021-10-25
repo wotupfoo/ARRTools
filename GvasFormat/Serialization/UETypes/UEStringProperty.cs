@@ -15,9 +15,11 @@ namespace GvasFormat.Serialization.UETypes
         {
             if (valueLength > -1)
             {
-                var terminator = reader.ReadByte();
+                byte terminator = reader.ReadByte();
                 if (terminator != 0)
+                {
                     throw new FormatException($"Offset: 0x{reader.BaseStream.Position - 1:x8}. Expected terminator (0x00), but was (0x{terminator:x2})");
+                }
             }
 
             Value = reader.ReadUEString();
@@ -32,12 +34,15 @@ namespace GvasFormat.Serialization.UETypes
             }
             else
             {
-                var bytes = Utf8.GetBytes(Value);
+                byte[] bytes = Utf8.GetBytes(Value);
                 writer.Write(bytes.Length + 6L);
                 writer.Write((byte)0);
-                writer.Write(bytes.Length+1);
+                writer.Write(bytes.Length + 1);
                 if (bytes.Length > 0)
+                {
                     writer.Write(bytes);
+                }
+
                 writer.Write((byte)0);
             }
         }

@@ -1,10 +1,20 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+    <PublishTrimmed>true</PublishTrimmed>
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
     <LangVersion>latest</LangVersion>
     <StartupObject>RailroadsOnlineSaveViewer.Program</StartupObject>
+    <Authors>JachyHm © 2021</Authors>
+    <Description>Console application for converting Railroads Online save file to better human readable JSON files.</Description>
+    <Copyright>JachyHm © 2021</Copyright>
+    <PackageProjectUrl>https://github.com/JachyHm/gvas-converter</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>

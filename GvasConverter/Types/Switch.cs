@@ -21,14 +21,14 @@ namespace RailroadsOnlineSaveViewer
         Switching //TODO: check if exists actually
     }
 
-    public class Switch: StaticObject
+    public class Switch : StaticObject
     {
         public SwitchType Type;
         public SwitchState State;
 
         public Switch() { }
 
-        public Switch(SwitchType type, Location location, Rotation rotation, SwitchState state): base(location, rotation)
+        public Switch(SwitchType type, Location location, Rotation rotation, SwitchState state) : base(location, rotation)
         {
             Type = type;
             State = state;

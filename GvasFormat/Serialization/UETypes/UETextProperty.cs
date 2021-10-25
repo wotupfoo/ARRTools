@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
 using System.Linq;
+using System.Text;
 
 namespace GvasFormat.Serialization.UETypes
 {
@@ -14,8 +14,8 @@ namespace GvasFormat.Serialization.UETypes
         public UETextProperty() { }
         public UETextProperty(BinaryReader reader, long valueLength, bool noTerminator = false)
         {
-            var pos = reader.BaseStream.Position;
-            var terminator = reader.ReadByte();
+            long pos = reader.BaseStream.Position;
+            byte terminator = reader.ReadByte();
 
             Flags = reader.ReadInt64();
 
@@ -32,7 +32,9 @@ namespace GvasFormat.Serialization.UETypes
                         string rowId = reader.ReadUEString();
                         byte rowType = reader.ReadByte();
                         if (rowType != 4)
+                        {
                             throw new NotImplementedException();
+                        }
 
                         UETextProperty rowData = new UETextProperty(reader, valueLength);
 
@@ -42,7 +44,10 @@ namespace GvasFormat.Serialization.UETypes
                     break;
                 case 2:
                     if (((Flags >> 32) & 0xFFFFFFFF) != 0)
+                    {
                         Value = reader.ReadUEString();
+                    }
+
                     break;
 
             }
@@ -68,7 +73,10 @@ namespace GvasFormat.Serialization.UETypes
             return result;
         }
 
-        public override void Serialize(BinaryWriter writer) => throw new NotImplementedException();
+        public override void Serialize(BinaryWriter writer)
+        {
+            throw new NotImplementedException();
+        }
 
         public long Flags;
         public string Id;
