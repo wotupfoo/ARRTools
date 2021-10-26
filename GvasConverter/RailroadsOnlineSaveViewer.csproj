@@ -6,7 +6,6 @@
     <PublishSingleFile>true</PublishSingleFile>
     <SelfContained>true</SelfContained>
     <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
-    <PublishTrimmed>true</PublishTrimmed>
     <PublishReadyToRun>true</PublishReadyToRun>
     <RuntimeIdentifier>win-x86</RuntimeIdentifier>
     <LangVersion>latest</LangVersion>
@@ -22,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ARRSaveFormat\ARRSaveFormat.csproj" />
     <ProjectReference Include="..\GvasFormat\GvasFormat.csproj" />
   </ItemGroup>
 

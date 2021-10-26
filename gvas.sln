@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GvasFormat", "GvasFormat\Gv
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RailroadsOnlineSaveViewer", "GvasConverter\RailroadsOnlineSaveViewer.csproj", "{F618BACD-D0A4-409D-B74B-29D0BFFB803F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ARRBetterMap", "ARRBetterMap\ARRBetterMap.csproj", "{087FE291-10A4-490E-9C92-7E498E046E29}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ARRSaveFormat", "ARRSaveFormat\ARRSaveFormat.csproj", "{BCE6ABDA-2DE9-44D9-9BAB-1CC88953C926}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{F618BACD-D0A4-409D-B74B-29D0BFFB803F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F618BACD-D0A4-409D-B74B-29D0BFFB803F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F618BACD-D0A4-409D-B74B-29D0BFFB803F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{087FE291-10A4-490E-9C92-7E498E046E29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{087FE291-10A4-490E-9C92-7E498E046E29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{087FE291-10A4-490E-9C92-7E498E046E29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{087FE291-10A4-490E-9C92-7E498E046E29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCE6ABDA-2DE9-44D9-9BAB-1CC88953C926}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCE6ABDA-2DE9-44D9-9BAB-1CC88953C926}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCE6ABDA-2DE9-44D9-9BAB-1CC88953C926}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCE6ABDA-2DE9-44D9-9BAB-1CC88953C926}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

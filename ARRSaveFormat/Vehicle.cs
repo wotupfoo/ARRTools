@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json.Converters;
-using RailroadsOnlineSaveViewer.Types;
+using ARRSaveFormat.Types;
 using System.Text.Json.Serialization;
 
-namespace RailroadsOnlineSaveViewer
+namespace ARRSaveFormat.Types
 {
     [JsonConverter(typeof(StringEnumConverter))]
     public enum MarkerLightState
@@ -17,6 +17,8 @@ namespace RailroadsOnlineSaveViewer
         public string Type;
         public Location Location;
         public Rotation Rotation;
+        public float Truck1Rotation;
+        public float Truck2Rotation;
         public string Number;
         public string Name;
         public int SmokestackType;
@@ -47,11 +49,13 @@ namespace RailroadsOnlineSaveViewer
 
         public Vehicle() { }
 
-        public Vehicle(string type, Location location, Rotation rotation, string number, string name, int smokestackType, int headlightType, float boilerFuelAmmount, float boilerFireTemp, float boilerWaterTemp, float boilerWaterLevel, float boilerPressure, bool headlightFront, bool headlightRear, bool couplerFrontState, bool couplerRearState, float tenderFuelAmmount, float tenderWaterAmmount, float compressorAirPressure, MarkerLightState markerLightsFrontRightState, MarkerLightState markerLightsFrontLeftState, MarkerLightState markerLightsRearRightState, MarkerLightState markerLightsRearLeftState, string freightType, int freightAmmount, float regulatorValue, float brakeValue, float generatorValveValue, float compressorValveValue, float reverserValue)
+        public Vehicle(string type, Location location, Rotation rotation, float truck1Rotation, float truck2Rotation, string number, string name, int smokestackType, int headlightType, float boilerFuelAmmount, float boilerFireTemp, float boilerWaterTemp, float boilerWaterLevel, float boilerPressure, bool headlightFront, bool headlightRear, bool couplerFrontState, bool couplerRearState, float tenderFuelAmmount, float tenderWaterAmmount, float compressorAirPressure, MarkerLightState markerLightsFrontRightState, MarkerLightState markerLightsFrontLeftState, MarkerLightState markerLightsRearRightState, MarkerLightState markerLightsRearLeftState, string freightType, int freightAmmount, float regulatorValue, float brakeValue, float generatorValveValue, float compressorValveValue, float reverserValue)
         {
             Type = type;
             Location = location;
             Rotation = rotation;
+            Truck1Rotation = truck1Rotation;
+            Truck2Rotation = truck2Rotation;
             Number = number;
             Name = name;
             SmokestackType = smokestackType;

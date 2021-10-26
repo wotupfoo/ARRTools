@@ -1,16 +1,17 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using RailroadsOnlineSaveViewer.Types;
+using ARRSaveFormat.Types;
 
-namespace RailroadsOnlineSaveViewer
+namespace ARRSaveFormat.Types
 {
     [JsonConverter(typeof(StringEnumConverter))]
     public enum SwitchType
     {
-        LeftControlLeft,
-        LeftControlRight,
-        RightControlLeft,
-        RightControlRight
+        SwitchLeft,
+        SwitchRight,
+        SwitchLeftMirror,
+        SwitchRightMirror,
+        SwitchCross90
     }
 
     [JsonConverter(typeof(StringEnumConverter))]

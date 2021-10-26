@@ -1,7 +1,9 @@
-﻿using GvasFormat.Serialization.UETypes;
-using RailroadsOnlineSaveViewer.Types;
+﻿using GvasFormat;
+using ARRSaveFormat.Types;
+using System;
+using GvasFormat.Serialization.UETypes;
 
-namespace RailroadsOnlineSaveViewer
+namespace ARRSaveFormat
 {
 
     public class Properties
@@ -21,7 +23,7 @@ namespace RailroadsOnlineSaveViewer
         private Location[] splineControlPoints;
         private bool[] splineVisibilityPoints;
 
-        public Properties(GvasFormat.Gvas save)
+        public Properties(Gvas save)
         {
             save.Properties.ForEach(property =>
             {
@@ -262,7 +264,7 @@ namespace RailroadsOnlineSaveViewer
                                 {
                                     UEVectorStructProperty rotation = (UEVectorStructProperty) arrayProperty.Items[i];
 
-                                    Turntables[i].DeckRotation = new Rotation(rotation.X, rotation.Y, rotation.Z);
+                                    Turntables[i].Rotation = new Rotation(rotation.X, rotation.Y, rotation.Z);
                                 }
                                 break;
 
@@ -479,6 +481,8 @@ namespace RailroadsOnlineSaveViewer
                     case "FrameTypeArray":
                     case "FrameLocationArray":
                     case "FrameRotationArray":
+                    case "Truck1RotationArray":
+                    case "Truck2RotationArray":
                     case "FrameNumberArray":
                     case "FrameNameArray":
                     case "SmokestackTypeArray":
@@ -705,6 +709,18 @@ namespace RailroadsOnlineSaveViewer
                                     Vehicles[i].ReverserValue = ((UEFloatProperty)arrayProperty.Items[i]).Value;
                                 }
                                 break;
+                            case "Truck1RotationArray":
+                                for (int i = 0; i < arrayProperty.Items.Length; i++)
+                                {
+                                    Vehicles[i].Truck1Rotation = ((UEFloatProperty)arrayProperty.Items[i]).Value;
+                                }
+                                break;
+                            case "Truck2RotationArray":
+                                for (int i = 0; i < arrayProperty.Items.Length; i++)
+                                {
+                                    Vehicles[i].Truck2Rotation = ((UEFloatProperty)arrayProperty.Items[i]).Value;
+                                }
+                                break;
                         }
 
                         break;
@@ -724,6 +740,8 @@ namespace RailroadsOnlineSaveViewer
                     }
                 }
             });
+            if (Splines == null)
+                return;
 
             for (int i = 0; i < Splines.Length; i++)
             {

@@ -1,0 +1,29 @@
+﻿<Window x:Class="ARRBetterMap.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="ARRMapViewer" Height="450" Width="800" SizeChanged="Window_SizeChanged">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="4*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Canvas x:Name="Canvas" Grid.Column="0">
+            <Image x:Name="MapBgr" HorizontalAlignment="Left" Height="0" Margin="0,0,0,0" VerticalAlignment="Top" Width="0" Source="/mapBgr.png" Stretch="UniformToFill" MouseWheel="MapBgr_MouseWheel" MouseLeftButtonDown="MapBgr_MouseLeftButtonDown" MouseLeftButtonUp="MapBgr_MouseLeftButtonUp" MouseMove="MapBgr_MouseMove"/>
+        </Canvas>
+        <Label Name="InfoRow" Grid.Row="1" Content="Diagnostika" Background="#A0808080"/>
+        <ListBox Name="VehiclesList" Grid.Column="1" Grid.RowSpan="2" MouseDoubleClick="VehiclesList_MouseDoubleClick">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Name}"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+</Window>

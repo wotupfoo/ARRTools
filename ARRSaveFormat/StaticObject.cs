@@ -1,4 +1,4 @@
-﻿namespace RailroadsOnlineSaveViewer.Types
+﻿namespace ARRSaveFormat.Types
 {
     public class Location
     {

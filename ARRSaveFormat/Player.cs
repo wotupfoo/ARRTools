@@ -1,6 +1,6 @@
-﻿using RailroadsOnlineSaveViewer.Types;
+﻿using ARRSaveFormat.Types;
 
-namespace RailroadsOnlineSaveViewer
+namespace ARRSaveFormat.Types
 {
     public class Player
     {

@@ -1,13 +1,13 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using RailroadsOnlineSaveViewer.Types;
+using ARRSaveFormat.Types;
 
-namespace RailroadsOnlineSaveViewer
+namespace ARRSaveFormat.Types
 {
     [JsonConverter(typeof(StringEnumConverter))]
     public enum WatertowerType
     {
-        Wooden
+        watertower_small
     }
 
     public class Watertower : StaticObject

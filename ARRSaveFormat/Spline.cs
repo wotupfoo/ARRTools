@@ -1,20 +1,20 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using RailroadsOnlineSaveViewer.Types;
+using ARRSaveFormat.Types;
 
-namespace RailroadsOnlineSaveViewer
+namespace ARRSaveFormat.Types
 {
     [JsonConverter(typeof(StringEnumConverter))]
     public enum SplineType
     {
-        Rails,
-        BridgeRails,
-        BankVariable,
-        BankConstant,
-        WallVariable,
-        WallConstant,
-        BridgeWooden,
-        BridgeSteel
+        RailNG,
+        Grade,
+        GradeConstant,
+        Trestle,
+        TrestleDeck,
+        StonewallVariable,
+        StonewallConstant,
+        SplineTrestleSteel
     }
 
     public class SplineSegment

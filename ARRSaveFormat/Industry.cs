@@ -1,23 +1,23 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using RailroadsOnlineSaveViewer.Types;
+using ARRSaveFormat.Types;
 
-namespace RailroadsOnlineSaveViewer
+namespace ARRSaveFormat
 {
     [JsonConverter(typeof(StringEnumConverter))]
     public enum IndustryType
     {
-        Spawn,
-        CargoDepot, //TODO: check industry types order!!!
-        LoggingCamp,
-        Sawmill,
-        Smelter,
-        IronMine,
-        CoalMine,
-        Ironworks,
-        Oilfield,
-        Refinery,
-        Firewood
+        unknown,
+        industry_loggingcamp,
+        industry_sawmill,
+        industry_smelter,
+        industry_ironworks,
+        industry_oilfield,
+        industry_refinery,
+        industry_coalmine,
+        industry_ironoremine,
+        industry_freightdepot,
+        industry_firewooddepot
     }
 
     public class Industry : StaticObject
