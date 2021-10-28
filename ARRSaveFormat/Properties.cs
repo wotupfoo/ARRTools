@@ -414,10 +414,10 @@ namespace ARRSaveFormat
                                     Industries[i].Rotation = new Rotation(rotation.X, rotation.Y, rotation.Z);
                                 }
                                 break;
-                            case "IndustryStorageEduct1":
-                            case "IndustryStorageEduct2":
-                            case "IndustryStorageEduct3":
-                            case "IndustryStorageEduct4":
+                            case "IndustryStorageEduct1Array":
+                            case "IndustryStorageEduct2Array":
+                            case "IndustryStorageEduct3Array":
+                            case "IndustryStorageEduct4Array":
                             {
                                 for (int i = 0; i < arrayProperty.Items.Length; i++)
                                 {
@@ -428,26 +428,26 @@ namespace ARRSaveFormat
 
                                     switch (arrayProperty.Name)
                                     {
-                                        case "IndustryStorageEduct1":
+                                        case "IndustryStorageEduct1Array":
                                             Industries[i].EductsStored[0] = ((UEIntProperty)arrayProperty.Items[i]).Value;
                                             break;
-                                        case "IndustryStorageEduct2":
+                                        case "IndustryStorageEduct2Array":
                                             Industries[i].EductsStored[1] = ((UEIntProperty)arrayProperty.Items[i]).Value;
                                             break;
-                                        case "IndustryStorageEduct3":
+                                        case "IndustryStorageEduct3Array":
                                             Industries[i].EductsStored[2] = ((UEIntProperty)arrayProperty.Items[i]).Value;
                                             break;
-                                        case "IndustryStorageEduct4":
+                                        case "IndustryStorageEduct4Array":
                                             Industries[i].EductsStored[3] = ((UEIntProperty)arrayProperty.Items[i]).Value;
                                             break;
                                     }
                                 }
                                 break;
                             }
-                            case "IndustryStorageProduct1":
-                            case "IndustryStorageProduct2":
-                            case "IndustryStorageProduct3":
-                            case "IndustryStorageProduct4":
+                            case "IndustryStorageProduct1Array":
+                            case "IndustryStorageProduct2Array":
+                            case "IndustryStorageProduct3Array":
+                            case "IndustryStorageProduct4Array":
                             {
                                 for (int i = 0; i < arrayProperty.Items.Length; i++)
                                 {
@@ -458,16 +458,16 @@ namespace ARRSaveFormat
 
                                     switch (arrayProperty.Name)
                                     {
-                                        case "IndustryStorageProduct1":
+                                        case "IndustryStorageProduct1Array":
                                             Industries[i].ProductsStored[0] = ((UEIntProperty)arrayProperty.Items[i]).Value;
                                             break;
-                                        case "IndustryStorageProduct2":
+                                        case "IndustryStorageProduct2Array":
                                             Industries[i].ProductsStored[1] = ((UEIntProperty)arrayProperty.Items[i]).Value;
                                             break;
-                                        case "IndustryStorageProduct3":
+                                        case "IndustryStorageProduct3Array":
                                             Industries[i].ProductsStored[2] = ((UEIntProperty)arrayProperty.Items[i]).Value;
                                             break;
-                                        case "IndustryStorageProduct4":
+                                        case "IndustryStorageProduct4Array":
                                             Industries[i].ProductsStored[3] = ((UEIntProperty)arrayProperty.Items[i]).Value;
                                             break;
                                     }
