@@ -53,7 +53,7 @@ namespace ARRBetterMap
 
         private Point? LastPoint { get; set; }
 
-        private Properties Properties { get; set; }
+        private ARRSaveFormat.Properties Properties { get; set; }
 
         private List<(Point, Shape, double, double, double)> Shapes { get; set; }
 
@@ -72,7 +72,9 @@ namespace ARRBetterMap
             OpenFileDialog dlg = new OpenFileDialog();
             dlg.DefaultExt = ".sav";
             dlg.Filter = "RailroadsOnline save file (*.sav)|*.sav";
-            dlg.InitialDirectory = System.IO.Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "arr/saved/savegames/");
+            string arrDir = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "arr/saved/savegames/");
+            if (Directory.Exists(arrDir))
+                dlg.InitialDirectory = arrDir;
 
             bool? result = dlg.ShowDialog();
             if (result != true)
@@ -119,7 +121,7 @@ namespace ARRBetterMap
             {
                 save = UESerializer.Read(stream);
             }
-            Properties = new Properties(save);
+            Properties = new ARRSaveFormat.Properties(save);
 
             Industry[] firewoods = Properties.Industries.Where(x => x.Type == IndustryType.industry_firewooddepot).ToArray();
             Dispatcher.Invoke(() =>

@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json.Converters;
 using ARRSaveFormat.Types;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace ARRSaveFormat.Types
 {

@@ -9,8 +9,10 @@ namespace ARRSaveFormat.Types
     {
         SwitchLeft,
         SwitchRight,
-        SwitchLeftMirror,
+        SwitchY,
+        SwitchYMirror,
         SwitchRightMirror,
+        SwitchLeftMirror,
         SwitchCross90
     }
 
