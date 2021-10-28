@@ -6,7 +6,7 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace RailroadsOnlineSaveViewer
+namespace ARRSaveConverter
 {
     internal class Program
     {

@@ -9,7 +9,7 @@
     <PublishReadyToRun>true</PublishReadyToRun>
     <RuntimeIdentifier>win-x86</RuntimeIdentifier>
     <LangVersion>latest</LangVersion>
-    <StartupObject>RailroadsOnlineSaveViewer.Program</StartupObject>
+    <StartupObject>ARRSaveConverter.Program</StartupObject>
     <Authors>JachyHm © 2021</Authors>
     <Description>Console application for converting Railroads Online save file to better human readable JSON files.</Description>
     <Copyright>JachyHm © 2021</Copyright>
