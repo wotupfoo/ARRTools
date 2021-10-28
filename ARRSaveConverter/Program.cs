@@ -12,6 +12,7 @@ namespace ARRSaveConverter
     {
         private static bool silent;
         private static bool noWait;
+        private static bool genDirty;
 
         private static void PrintUsage()
         {
@@ -22,6 +23,7 @@ namespace ARRSaveConverter
             Console.WriteLine("Parameters:");
             Console.WriteLine("  --silent - disables output to console");
             Console.WriteLine("  --no-wait - disables keyboard input at the end of run");
+            Console.WriteLine("  --gen-dirty - generate \"dirty\" JSON in original format");
 
             Console.ReadKey();
         }
@@ -45,6 +47,8 @@ namespace ARRSaveConverter
                         silent = true;
                     else if (lowerVar == "--no-wait")
                         noWait = true;
+                    else if (lowerVar == "--gen-dirty")
+                        genDirty = true;
                     else
                     {
                         Console.WriteLine($"Unknown parameter \"{args[i]}\"!");
@@ -94,16 +98,19 @@ namespace ARRSaveConverter
                     save = UESerializer.Read(stream);
                 }
 
-                if (!silent)
-                    Console.WriteLine("Converting to json...");
-                string json = JsonConvert.SerializeObject(save, new JsonSerializerSettings{Formatting = Formatting.Indented});
-
-                if (silent)
-                    Console.WriteLine("Saving json...");
-                using (FileStream stream = File.Open(args[0] + ".orig.json", FileMode.Create, FileAccess.Write, FileShare.Read))
-                using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(false)))
+                if (genDirty)
                 {
-                    writer.Write(json);
+                    if (!silent)
+                        Console.WriteLine("Converting to dirty json...");
+                    string json = JsonConvert.SerializeObject(save, new JsonSerializerSettings{Formatting = Formatting.Indented});
+
+                    if (silent)
+                        Console.WriteLine("Saving drity json...");
+                    using (FileStream stream = File.Open(args[0] + ".orig.json", FileMode.Create, FileAccess.Write, FileShare.Read))
+                    using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(false)))
+                    {
+                        writer.Write(json);
+                    }
                 }
 
                 Properties properties = new Properties(save);
