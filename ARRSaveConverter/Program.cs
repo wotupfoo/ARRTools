@@ -61,7 +61,8 @@ namespace ARRSaveConverter
                 }
             }
             Console.WriteLine("Done.");
-            Console.ReadKey(true);
+            if (Environment.UserInteractive && !Console.IsInputRedirected)
+                Console.ReadKey(true);
         }
     }
 }
