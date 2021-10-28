@@ -18,12 +18,15 @@
             <Image x:Name="MapBgr" HorizontalAlignment="Left" Height="0" Margin="0,0,0,0" VerticalAlignment="Top" Width="0" Source="/mapBgr.png" Stretch="UniformToFill" MouseWheel="MapBgr_MouseWheel" MouseLeftButtonDown="MapBgr_MouseLeftButtonDown" MouseLeftButtonUp="MapBgr_MouseLeftButtonUp" MouseMove="MapBgr_MouseMove"/>
         </Canvas>
         <Label Name="InfoRow" Grid.Row="1" Content="Diagnostika" Background="#A0808080"/>
-        <ListBox Name="VehiclesList" Grid.Column="1" Grid.RowSpan="2" MouseDoubleClick="VehiclesList_MouseDoubleClick">
+        <ListBox Name="VehiclesList" Grid.Column="1" MouseDoubleClick="VehiclesList_MouseDoubleClick">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding Name}"/>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+        <Grid Grid.Row="1" Grid.Column="1" Background="White">
+            <CheckBox x:Name="displayInvisible" Content="Display invisible splines" Checked="displayInvisible_Checked" Unchecked="displayInvisible_Unchecked" Margin="5"/>
+        </Grid>
     </Grid>
 </Window>

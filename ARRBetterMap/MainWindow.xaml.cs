@@ -45,7 +45,10 @@ namespace ARRBetterMap
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const int MAP_SIZE = 204000;
+        private const int MAP_HEIGHT = 194000;
+        private const int MAP_WIDTH = 203404;
+        private const int OFFSET_X = 0;
+        private const int OFFSET_Y = -4000;
         private double MinSize { get; set; }
         private bool Holding { get; set; }
 
@@ -94,7 +97,7 @@ namespace ARRBetterMap
             InitStaticShapes(Properties.Turntables, ShapeType.Ellipse, Colors.Red, 1, 0, 3);
             InitVehicles();
 
-            InfoRow.Content = $"Succesfully loaded {Properties.Vehicles.Length} vehicles, {Properties.Watertowers.Length} watertowers, {Properties.Sandhouses.Length} sandhouses, {Properties.Industries.Length} industries, {Properties.Turntables.Length} turntables and {Properties.Splines.Length} splines from save {dlg.FileName} - {Properties.SaveGameDate}!";
+            InfoRow.Content = $"Succesfully loaded {Properties.Vehicles?.Length ?? 0} vehicles, {Properties.Watertowers?.Length ?? 0} watertowers, {Properties.Sandhouses?.Length ?? 0} sandhouses, {Properties.Industries?.Length ?? 0} industries, {Properties.Turntables?.Length ?? 0} turntables and {Properties.Splines?.Length ?? 0} splines from save {dlg.FileName} - {Properties.SaveGameDate}!";
         }
 
         private void InitVehicles()
@@ -125,6 +128,9 @@ namespace ARRBetterMap
 
         private void InitStaticShapes(StaticObject[] objects, ShapeType shapeType, Color color, double ratio, double baseScale, double scaledScale)
         {
+            if (objects == null)
+                return;
+
             for (int i = 0; i < objects.Length; i++)
             {
                 StaticObject staticObject = objects[i];
@@ -152,6 +158,9 @@ namespace ARRBetterMap
 
         private void InitSplines()
         {
+            if (Properties.Splines == null)
+                return;
+
             Properties.Splines = Properties.Splines.OrderBy(x => x.Type == SplineType.RailNG || x.Type == SplineType.TrestleDeck).ThenByDescending(x => x.Type).ThenBy(x => x.Location.Z).ToArray();
             for (int i = 0; i < Properties.Splines.Length; i++)
             {
@@ -189,7 +198,7 @@ namespace ARRBetterMap
                 for (int i = 0; i < spline.Item3.Length; i++)
                 {
                     SplineSegment splineSegment = spline.Item3[i];
-                    pathSegments[i] = new QuadraticBezierSegment(TranslatePoint(new Point(splineSegment.LocationStart.X, splineSegment.LocationStart.Y)), TranslatePoint(new Point(splineSegment.LocationEnd.X, splineSegment.LocationEnd.Y)), splineSegment.Visible);
+                    pathSegments[i] = new QuadraticBezierSegment(TranslatePoint(splineSegment.LocationStart.X, splineSegment.LocationStart.Y), TranslatePoint(splineSegment.LocationEnd.X, splineSegment.LocationEnd.Y), splineSegment.Visible || (displayInvisible.IsChecked ?? false));
                 }
                 PathFigureCollection pfc = new PathFigureCollection();
                 pfc.Add(new PathFigure(TranslatePoint(spline.Item1.X, spline.Item1.Y), pathSegments, false));
@@ -234,10 +243,10 @@ namespace ARRBetterMap
 
         private void ShowLocation(Point targetLocation)
         {
-            ScaleBackground(6.0, new Point(0, 0));
+            ScaleBackground(10.0, new Point(0, 0));
             Point pointInImage = TranslatePoint(targetLocation);
-            double xShift = 0.4*Width - pointInImage.X;
-            double yShift = 0.4*Height - pointInImage.Y;
+            double xShift = 0.4*ActualWidth - pointInImage.X;
+            double yShift = 0.4*ActualHeight - pointInImage.Y;
             TranslateBackground(xShift, yShift);
         }
 
@@ -281,7 +290,7 @@ namespace ARRBetterMap
 
         private Point TranslatePoint(double x, double y)
         {
-            Point imageRelativePoint = new Point((-x+MAP_SIZE)/(2*MAP_SIZE), (-y+MAP_SIZE)/(2*MAP_SIZE));
+            Point imageRelativePoint = new Point((-x+MAP_WIDTH+OFFSET_X)/(2*MAP_WIDTH), (-y+MAP_HEIGHT+OFFSET_Y)/(2*MAP_HEIGHT));
             Point windowRelativePoint = new Point(imageRelativePoint.X*MapBgrSize+MapBgrStart.X, imageRelativePoint.Y*MapBgrSize+MapBgrStart.Y);
 
             return windowRelativePoint;
@@ -337,6 +346,16 @@ namespace ARRBetterMap
         private void VehiclesList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             ShowLocation(((ListboxVehiclesType)VehiclesList.SelectedItem).Location);
+        }
+
+        private void displayInvisible_Checked(object sender, RoutedEventArgs e)
+        {
+            DrawMap();
+        }
+
+        private void displayInvisible_Unchecked(object sender, RoutedEventArgs e)
+        {
+            DrawMap();
         }
     }
 }
