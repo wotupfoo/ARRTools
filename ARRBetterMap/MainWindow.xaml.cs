@@ -7,16 +7,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace ARRBetterMap
@@ -60,11 +55,17 @@ namespace ARRBetterMap
 
         private Properties Properties { get; set; }
 
-        private List<(Point, Shape, double, double, double)> Shapes { get; set; } = new List<(Point, Shape, double, double, double)>();
+        private List<(Point, Shape, double, double, double)> Shapes { get; set; }
 
-        public List<ListboxVehiclesType> ListboxVehicles { get; set; } = new List<ListboxVehiclesType>();
+        private List<(Point, System.Windows.Shapes.Path, SplineSegment[], SplineType)> Splines { get; set; }
 
-        private List<(Point, System.Windows.Shapes.Path, SplineSegment[], SplineType)> Splines { get; set; } = new List<(Point, System.Windows.Shapes.Path, SplineSegment[], SplineType)>();
+        private List<(Point, Shape)> Players { get; set; }
+
+        public List<ListboxVehiclesType> ListboxVehicles { get; set; }
+
+        private string SaveFile { get; set; }
+
+        private FileSystemWatcher SaveFileWatcher { get; set; }
 
         public MainWindow()
         {
@@ -79,25 +80,63 @@ namespace ARRBetterMap
                 return;
             }
 
+            SaveFile = dlg.FileName;
+
             InitializeComponent();
 
+            SaveFileWatcher = RunWatcher();
+        }
+
+        public FileSystemWatcher RunWatcher()
+        {
+            Init();
+
+            FileSystemWatcher watcher = new FileSystemWatcher
+            {
+                Path = System.IO.Path.GetDirectoryName(SaveFile),
+
+                Filter = "*.sav",
+
+                NotifyFilter = NotifyFilters.LastWrite
+            };
+
+            watcher.Changed += new FileSystemEventHandler(OnChanged);
+            watcher.EnableRaisingEvents = true;
+
+            return watcher;
+        }
+
+        private void Init()
+        {
+            Shapes = new List<(Point, Shape, double, double, double)>();
+            ListboxVehicles = new List<ListboxVehiclesType>();
+            Splines = new List<(Point, System.Windows.Shapes.Path, SplineSegment[], SplineType)>();
+            Players = new List<(Point, Shape)>();
+
             Gvas save;
-            using (FileStream stream = File.Open(dlg.FileName, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (FileStream stream = File.Open(SaveFile, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 save = UESerializer.Read(stream);
             }
             Properties = new Properties(save);
 
             Industry[] firewoods = Properties.Industries.Where(x => x.Type == IndustryType.industry_firewooddepot).ToArray();
-            InitStaticShapes(Properties.Industries.Except(firewoods).ToArray(), ShapeType.Rectangle, Colors.Gray, 2, 0, 10);
-            InitSplines();
-            InitStaticShapes(Properties.Watertowers, ShapeType.Ellipse, Colors.Blue, 1, 1.5, 1.5);
-            InitStaticShapes(Properties.Sandhouses, ShapeType.Rectangle, Colors.Yellow, 2, 0.5, 2);
-            InitStaticShapes(firewoods, ShapeType.Rectangle, Colors.Brown, 2, 0.5, 2);
-            InitStaticShapes(Properties.Turntables, ShapeType.Ellipse, Colors.Red, 1, 0, 3);
-            InitVehicles();
+            Dispatcher.Invoke(() =>
+            {
+                Canvas.Children.RemoveRange(1, Canvas.Children.Count - 1);
+                InitStaticShapes(Properties.Industries.Except(firewoods).ToArray(), ShapeType.Rectangle, Colors.Gray, 2, 0, 10);
+                InitSplines();
+                InitStaticShapes(Properties.Watertowers, ShapeType.Ellipse, Colors.Blue, 1, 1.5, 1.5);
+                InitStaticShapes(Properties.Sandhouses, ShapeType.Rectangle, Colors.Yellow, 2, 0.5, 2);
+                InitStaticShapes(firewoods, ShapeType.Rectangle, Colors.Brown, 2, 0.5, 2);
+                InitStaticShapes(Properties.Turntables, ShapeType.Ellipse, Colors.Red, 1, 0, 3);
+                InitVehicles();
+                InitPlayers(Properties.Players);
+                InfoRow.Content = $"Succesfully loaded {Properties.Vehicles?.Length ?? 0} vehicles, {Properties.Watertowers?.Length ?? 0} watertowers, {Properties.Sandhouses?.Length ?? 0} sandhouses, {Properties.Industries?.Length ?? 0} industries, {Properties.Turntables?.Length ?? 0} turntables and {Properties.Splines?.Length ?? 0} splines from save {SaveFile} - {Properties.SaveGameDate}!";
 
-            InfoRow.Content = $"Succesfully loaded {Properties.Vehicles?.Length ?? 0} vehicles, {Properties.Watertowers?.Length ?? 0} watertowers, {Properties.Sandhouses?.Length ?? 0} sandhouses, {Properties.Industries?.Length ?? 0} industries, {Properties.Turntables?.Length ?? 0} turntables and {Properties.Splines?.Length ?? 0} splines from save {dlg.FileName} - {Properties.SaveGameDate}!";
+                DrawMap();
+            });
+
         }
 
         private void InitVehicles()
@@ -124,6 +163,43 @@ namespace ARRBetterMap
                 Canvas.Children.Add(rect);
             }
             VehiclesList.ItemsSource = ListboxVehicles;
+        }
+
+        private void InitPlayers(Player[] players)
+        {
+            if (players == null)
+                return;
+
+            for (int i = 0; i < players.Length; i++)
+            {
+                Player player = players[i];
+
+                Polygon shape = new Polygon();
+
+                Type colorsType = typeof(Colors);
+                PropertyInfo[] properties = colorsType.GetProperties();
+                Color color = (Color)properties[i*10].GetValue(null, null);
+                shape.Stroke = new SolidColorBrush(color);
+                shape.Fill = new SolidColorBrush(color);
+                shape.Width = 20;
+                shape.Height = 20;
+                TransformGroup tg = new TransformGroup();
+                tg.Children.Add(new RotateTransform(player.Rotation, shape.Width / 2.0, shape.Height / 2.0));
+                //tg.Children.Add(new ScaleTransform(MapBgrScale / 3, MapBgrScale / 3, shape.Width / 2.0, shape.Height / 2.0));
+                shape.LayoutTransform = tg;
+                PointCollection pc = new PointCollection(new List<Point>{new Point(-10, 10), new Point(-10, -10), new Point(10, -10) });
+                shape.Points = pc;
+
+                string printableName = $"[{i}] {player.Name} - {player.Money}$ : {player.XP}XP";
+                ToolTip tt = new ToolTip();
+                tt.Content = printableName;
+                shape.ToolTip = tt;
+
+                Point location = new Point(player.Location.X, player.Location.Y);
+                Players.Add((location, shape));
+
+                Canvas.Children.Add(shape);
+            }
         }
 
         private void InitStaticShapes(StaticObject[] objects, ShapeType shapeType, Color color, double ratio, double baseScale, double scaledScale)
@@ -181,8 +257,30 @@ namespace ARRBetterMap
             }
         }
 
+        private void OnChanged(object source, FileSystemEventArgs e)
+        {
+            System.Threading.Thread.Sleep(50);
+
+            SaveFile = e.FullPath;
+            Init();
+        }
+
         private void DrawMap()
         {
+            Players.ForEach(player =>
+            {
+                Point translatedPoint = TranslatePoint(player.Item1);
+                /*player.Item2.Width = 20 * MapBgrScale;
+                player.Item2.Height = 20 * MapBgrScale;
+                /*ScaleTransform st = (ScaleTransform)((TransformGroup)player.Item2.LayoutTransform).Children[1];
+                st.CenterX = player.Item2.Width / 2;
+                st.CenterY = player.Item2.Height / 2;
+                st.ScaleX = MapBgrScale / 3;
+                st.ScaleY = MapBgrScale / 3;*/
+                Canvas.SetLeft(player.Item2, translatedPoint.X - player.Item2.Width / 2);
+                Canvas.SetTop(player.Item2, translatedPoint.Y - player.Item2.Height / 2);
+            });
+
             Shapes.ForEach(rect =>
             {
                 Point translatedPoint = TranslatePoint(rect.Item1);
