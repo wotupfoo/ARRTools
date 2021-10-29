@@ -35,7 +35,6 @@ namespace ARRSaveConverter
             if (args.Length == 0)
             {
                 Console.WriteLine("Missing <path_to_save> parameter!");
-                PrintUsage();
             }
 
             for (int i = 0; i < args.Length; i++)

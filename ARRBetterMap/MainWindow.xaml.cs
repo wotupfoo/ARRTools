@@ -5,6 +5,7 @@ using GvasFormat.Serialization;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -42,8 +43,14 @@ namespace ARRBetterMap
     {
         private const int MAP_HEIGHT = 194000;
         private const int MAP_WIDTH = 203404;
-        private const int OFFSET_X = 0;
-        private const int OFFSET_Y = -4000;
+        private const int MAP_OFFSET_X = 0;
+        private const int MAP_OFFSET_Y = -4000;
+        private const int LEN_SWITCH_MAIN = 1950;
+        private const int LEN_SWITCH_SIDE = 1950;
+        private const int SWITCH_SIDE_ROT = 6;
+        private const int LEN_CROSS = 385;
+        private const int TURNABLE_SIZE = 570;
+        
         private double MinSize { get; set; }
         private bool Holding { get; set; }
 
@@ -69,25 +76,48 @@ namespace ARRBetterMap
 
         public MainWindow()
         {
-            OpenFileDialog dlg = new OpenFileDialog();
-            dlg.DefaultExt = ".sav";
-            dlg.Filter = "RailroadsOnline save file (*.sav)|*.sav";
-            string arrDir = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "arr/saved/savegames/");
-            if (Directory.Exists(arrDir))
-                dlg.InitialDirectory = arrDir;
-
-            bool? result = dlg.ShowDialog();
-            if (result != true)
+            string arrDir = string.Empty;
+            string localAppData = string.Empty;
+            try
             {
-                Close();
-                return;
+                localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             }
+            catch (Exception e)
+            {
+                Trace.Assert(false, $"Getting localAppData failed with {e.Message}");
+            }
+            try
+            {
+                arrDir = System.IO.Path.Combine(localAppData, "arr\\saved\\savegames\\");
+            }
+            catch (Exception e)
+            {
+                Trace.Assert(false, $"Joining localAppData {localAppData} with {arrDir} failed with {e.Message}");
+            }
+            try
+            {
+                OpenFileDialog dlg = new OpenFileDialog();
+                dlg.DefaultExt = ".sav";
+                dlg.Filter = "RailroadsOnline save file (*.sav)|*.sav";
+                if (Directory.Exists(arrDir))
+                    dlg.InitialDirectory = arrDir;
 
-            SaveFile = dlg.FileName;
+                bool? result = dlg.ShowDialog();
+                if (result != true)
+                {
+                    Close();
+                    return;
+                }
 
-            InitializeComponent();
+                SaveFile = dlg.FileName;
 
-            SaveFileWatcher = RunWatcher();
+                InitializeComponent();
+
+                SaveFileWatcher = RunWatcher();
+            } catch (Exception e)
+            {
+                Trace.Assert(false, $"Opening dialog with path \"{arrDir}\" failed with {e.Message}");
+            }
         }
 
         public FileSystemWatcher RunWatcher()
@@ -129,13 +159,14 @@ namespace ARRBetterMap
                 Canvas.Children.RemoveRange(1, Canvas.Children.Count - 1);
                 InitStaticShapes(Properties.Industries.Except(firewoods).ToArray(), ShapeType.Rectangle, Colors.Gray, 2, 0, 10);
                 InitSplines();
+                InitSwitches();
                 InitStaticShapes(Properties.Watertowers, ShapeType.Ellipse, Colors.Blue, 1, 1.5, 1.5);
                 InitStaticShapes(Properties.Sandhouses, ShapeType.Rectangle, Colors.Yellow, 2, 0.5, 2);
                 InitStaticShapes(firewoods, ShapeType.Rectangle, Colors.Brown, 2, 0.5, 2);
-                InitStaticShapes(Properties.Turntables, ShapeType.Ellipse, Colors.Red, 1, 0, 3);
+                InitStaticShapes(Properties.Turntables, ShapeType.Ellipse, Colors.Red, 1, 0, 3, true);
                 InitVehicles();
                 InitPlayers(Properties.Players);
-                InfoRow.Content = $"Succesfully loaded {Properties.Vehicles?.Length ?? 0} vehicles, {Properties.Watertowers?.Length ?? 0} watertowers, {Properties.Sandhouses?.Length ?? 0} sandhouses, {Properties.Industries?.Length ?? 0} industries, {Properties.Turntables?.Length ?? 0} turntables and {Properties.Splines?.Length ?? 0} splines from save {SaveFile} - {Properties.SaveGameDate}!";
+                InfoRow.Content = $"Succesfully loaded {Properties.Vehicles?.Length ?? 0} vehicles, {Properties.Watertowers?.Length ?? 0} watertowers, {Properties.Sandhouses?.Length ?? 0} sandhouses, {Properties.Industries?.Length ?? 0} industries, {Properties.Turntables?.Length ?? 0} turntables, {Properties.Switches?.Length ?? 0} switches and {Properties.Splines?.Length ?? 0} splines from save {SaveFile} - {Properties.SaveGameDate}!";
 
                 DrawMap();
             });
@@ -205,7 +236,7 @@ namespace ARRBetterMap
             }
         }
 
-        private void InitStaticShapes(StaticObject[] objects, ShapeType shapeType, Color color, double ratio, double baseScale, double scaledScale)
+        private void InitStaticShapes(StaticObject[] objects, ShapeType shapeType, Color color, double ratio, double baseScale, double scaledScale, bool notCentered = false)
         {
             if (objects == null)
                 return;
@@ -226,9 +257,17 @@ namespace ARRBetterMap
                 shape.Fill = new SolidColorBrush(color);
                 shape.Width = 9 * baseScale + MapBgrScale * scaledScale;
                 shape.Height = 9 * baseScale * ratio + MapBgrScale * scaledScale * ratio;
-                shape.LayoutTransform = new RotateTransform(staticObject.Rotation.Y, shape.Width / 2.0, shape.Height / 2.0);
+                if (!notCentered)
+                    shape.LayoutTransform = new RotateTransform(staticObject.Rotation.Y, shape.Width / 2.0, shape.Height / 2.0);
 
-                Point location = new Point(staticObject.Location.X, staticObject.Location.Y);
+                float xOffset = 0;
+                float yOffset = 0;
+                if (notCentered)
+                {
+                    xOffset = -(float)Math.Sin((staticObject.Rotation.Y)/180*Math.PI)*TURNABLE_SIZE;
+                    yOffset = (float)Math.Cos((staticObject.Rotation.Y)/180*Math.PI)*TURNABLE_SIZE;
+                }
+                Point location = new Point(staticObject.Location.X + xOffset, staticObject.Location.Y + yOffset);
                 Shapes.Add((location, shape, ratio, baseScale, scaledScale));
 
                 Canvas.Children.Add(shape);
@@ -252,11 +291,70 @@ namespace ARRBetterMap
                     spline.Type == SplineType.Trestle ? Colors.Yellow :
                     spline.Type == SplineType.SplineTrestleSteel ? Colors.Blue : Colors.Red;
                 curve.Stroke = new SolidColorBrush(color);
-                curve.StrokeThickness = MapBgrScale * (spline.Type == SplineType.RailNG || spline.Type == SplineType.TrestleDeck ? 1 : 3);
 
                 Splines.Add((new Point(spline.Location.X, spline.Location.Y), curve, spline.Segments, spline.Type));
 
                 Canvas.Children.Add(curve);
+            }
+        }
+
+        private void InitSwitches()
+        {
+            if (Properties.Switches == null)
+                return;
+
+            for (int i = 0; i < Properties.Switches.Length; i++)
+            {
+                ARRSaveFormat.Types.Switch @switch = Properties.Switches[i];
+
+                System.Windows.Shapes.Path main = new System.Windows.Shapes.Path();
+                System.Windows.Shapes.Path side = new System.Windows.Shapes.Path();
+
+                Color colorMain = @switch.State == SwitchState.Main || @switch.Type == SwitchType.SwitchCross90 ? Colors.Red : Colors.Black;
+                Color colorSide = @switch.State == SwitchState.Side || @switch.Type == SwitchType.SwitchCross90 ? Colors.Red : Colors.Black;
+
+                main.Stroke = new SolidColorBrush(colorMain);
+
+                side.Stroke = new SolidColorBrush(colorSide);
+
+                if (@switch.Type == SwitchType.SwitchCross90)
+                {
+                    float xOffsetMain = (float)Math.Cos((@switch.Rotation.Y)/180*Math.PI)*LEN_CROSS;
+                    float yOffsetMain = (float)Math.Sin((@switch.Rotation.Y)/180*Math.PI)*LEN_CROSS;
+                    Location mainEndLocation = new Location(@switch.Location.X + xOffsetMain, @switch.Location.Y + yOffsetMain, 0);
+                    SplineSegment mainSegment = new SplineSegment(@switch.Location, mainEndLocation, true);
+
+                    float xOffsetSide = -(float)Math.Cos((@switch.Rotation.Y-90)/180*Math.PI)*LEN_CROSS;
+                    float yOffsetSide = -(float)Math.Sin((@switch.Rotation.Y-90)/180*Math.PI)*LEN_CROSS;
+                    Location sideStartLocation = new Location(@switch.Location.X - xOffsetSide/2 + xOffsetMain/2, @switch.Location.Y - yOffsetSide/2 + yOffsetMain/2, 0);
+                    Location sideEndLocation = new Location(@switch.Location.X + xOffsetSide/2 + xOffsetMain/2, @switch.Location.Y + yOffsetSide/2 + yOffsetMain/2, 0);
+                    SplineSegment sideSegment = new SplineSegment(sideStartLocation, sideEndLocation, true);
+
+                    Splines.Add((new Point(@switch.Location.X, @switch.Location.Y), main, new SplineSegment[] { mainSegment }, SplineType.RailNG));
+                    Splines.Add((new Point(sideStartLocation.X, sideStartLocation.Y), side, new SplineSegment[] { sideSegment }, SplineType.RailNG));
+
+                    Canvas.Children.Add(main);
+                    Canvas.Children.Add(side);
+                }
+                else
+                {
+                    float xOffsetMain = -(float)Math.Cos((@switch.Rotation.Y-90)/180*Math.PI)*LEN_SWITCH_MAIN;
+                    float yOffsetMain = -(float)Math.Sin((@switch.Rotation.Y-90)/180*Math.PI)*LEN_SWITCH_MAIN;
+                    Location mainEndLocation = new Location(@switch.Location.X + xOffsetMain, @switch.Location.Y + yOffsetMain, 0);
+                    SplineSegment mainSegment = new SplineSegment(@switch.Location, mainEndLocation, true);
+
+                    int rotationOffset = @switch.Type == SwitchType.SwitchLeft || @switch.Type == SwitchType.SwitchLeftMirror ? -SWITCH_SIDE_ROT : SWITCH_SIDE_ROT;
+                    float xOffsetSide = -(float)Math.Cos((@switch.Rotation.Y-90+rotationOffset)/180*Math.PI)*LEN_SWITCH_SIDE;
+                    float yOffsetSide = -(float)Math.Sin((@switch.Rotation.Y-90+rotationOffset)/180*Math.PI)*LEN_SWITCH_SIDE;
+                    Location sideEndLocation = new Location(@switch.Location.X + xOffsetSide, @switch.Location.Y + yOffsetSide, 0);
+                    SplineSegment sideSegment = new SplineSegment(@switch.Location, sideEndLocation, true);
+
+                    Splines.Add((new Point(@switch.Location.X, @switch.Location.Y), main, new SplineSegment[] { mainSegment }, SplineType.RailNG));
+                    Splines.Add((new Point(@switch.Location.X, @switch.Location.Y), side, new SplineSegment[] { sideSegment }, SplineType.RailNG));
+
+                    Canvas.Children.Add(main);
+                    Canvas.Children.Add(side);
+                }
             }
         }
 
@@ -303,7 +401,8 @@ namespace ARRBetterMap
                 }
                 PathFigureCollection pfc = new PathFigureCollection();
                 pfc.Add(new PathFigure(TranslatePoint(spline.Item1.X, spline.Item1.Y), pathSegments, false));
-                spline.Item2.StrokeThickness = MapBgrScale * (spline.Item4 == SplineType.RailNG || spline.Item4 == SplineType.TrestleDeck ? 1 : 3);
+                float mult = spline.Item4 == SplineType.RailNG || spline.Item4 == SplineType.TrestleDeck ? 0.3f : 1;
+                spline.Item2.StrokeThickness = MapBgrScale * mult + 5/MapBgrScale*mult;
                 spline.Item2.Data = new PathGeometry(pfc);
             });
         }
@@ -391,7 +490,7 @@ namespace ARRBetterMap
 
         private Point TranslatePoint(double x, double y)
         {
-            Point imageRelativePoint = new Point((-x+MAP_WIDTH+OFFSET_X)/(2*MAP_WIDTH), (-y+MAP_HEIGHT+OFFSET_Y)/(2*MAP_HEIGHT));
+            Point imageRelativePoint = new Point((-x+MAP_WIDTH+MAP_OFFSET_X)/(2*MAP_WIDTH), (-y+MAP_HEIGHT+MAP_OFFSET_Y)/(2*MAP_HEIGHT));
             Point windowRelativePoint = new Point(imageRelativePoint.X*MapBgrSize+MapBgrStart.X, imageRelativePoint.Y*MapBgrSize+MapBgrStart.Y);
 
             return windowRelativePoint;
